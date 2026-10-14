@@ -1,0 +1,48 @@
+name: SteamAPI CI
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build-and-test:
+    name: Build and Test (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ ubuntu-latest, windows-latest ]
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v6
+        with:
+          dotnet-version: '6.0.x'
+
+      - name: Display .NET environment info
+        run: dotnet --info
+
+      - name: Restore dependencies
+        run: dotnet restore SteamAPI.sln
+
+      - name: Build (Debug)
+        run: dotnet build SteamAPI.sln --configuration Debug --no-restore
+
+      - name: Run tests (Debug)
+        run: dotnet test SteamAPI.sln --configuration Debug --no-build --no-restore
+
+      - name: Build (Release)
+        run: dotnet build SteamAPI.sln --configuration Release --no-restore
+
+      - name: Run tests (Release)
+        run: dotnet test SteamAPI.sln --configuration Release --no-build --no-restore
