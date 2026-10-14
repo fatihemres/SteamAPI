@@ -6,4 +6,9 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="HtmlAgilityPack" Version="1.13.0" />
+    <InternalsVisibleTo Include="SteamAPI.Tests" />
+  </ItemGroup>
+
 </Project>
