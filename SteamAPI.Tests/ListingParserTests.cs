@@ -2,6 +2,7 @@ using System.Globalization;
 using System.Text.Json;
 using Infrastructer.Steam.CustomTypes;
 using Infrastructer.Steam.Enumerations;
+using Infrastructer.Steam.Exceptions;
 using Infrastructer.Steam.Services.Implementation;
 using Xunit;
 
@@ -182,13 +183,13 @@ namespace SteamAPI.Tests
         }
 
         [Fact]
-        public void ParseResponse_AllMatchedListingsUnparseable_ShouldThrowInvalidOperationException()
+        public void ParseResponse_AllMatchedListingsUnparseable_ShouldThrowSteamResponseParseException()
         {
             // Upstream structure changed such that match elements exist, but not a single element can be parsed
             string html = @"<a class=""match""><div>Changed upstream completely</div></a>
 <a class=""match""><div>Another unparseable element</div></a>";
 
-            var ex = Assert.Throws<InvalidOperationException>(() =>
+            var ex = Assert.Throws<SteamResponseParseException>(() =>
                 SteamService.ParseResponse(html, new CultureInfo("en-US")));
 
             Assert.Contains("Detected upstream Steam search markup failure", ex.Message);
