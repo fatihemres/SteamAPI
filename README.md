@@ -2,8 +2,8 @@
 
 A lightweight ASP.NET Core 10 Web API providing structured search suggestions from the Steam store.
 
-> **Project Status: v0.2.0 Release Candidate Under Review**<br>
-> *This repository is currently undergoing final quality assurance and release candidate review. The default remote GitHub `master` branch remains v0.1.1 until modernization is approved and merged. During release candidate review, modernized code resides on the `net10_modernization_planning` branch.*<br>
+> **Project Notice:**<br>
+> *For official releases, published binaries, and release notes, see [GitHub Releases](https://github.com/fatihemres/SteamAPI/releases).*<br>
 > *SteamAPI is not an official Valve product and is not endorsed by or affiliated with Valve Corporation.*
 
 ---
@@ -51,8 +51,6 @@ Clone the repository and enter the directory:
 git clone https://github.com/fatihemres/SteamAPI.git
 cd SteamAPI
 ```
-
-*(Note: During active release candidate review prior to merging PR #3, modern .NET 10 code resides on the `net10_modernization_planning` branch; run `git checkout net10_modernization_planning` when building from source before merge).*
 
 ### 2. HTTPS Certificate Setup (Development)
 
@@ -222,11 +220,10 @@ For test inventory details, see [Release Candidate Notes](docs/releases/v0.2.0-r
 
 ---
 
-## Project Status and Release
+## Documentation and Releases
 
-This repository is currently preparing the **v0.2.0** milestone.
-
-- Comprehensive documentation: [docs/API.md](docs/API.md)
-- Release candidate notes: [docs/releases/v0.2.0-rc-notes.md](docs/releases/v0.2.0-rc-notes.md)
+- Comprehensive API specification: [docs/API.md](docs/API.md)
+- Release candidate notes and migration details: [docs/releases/v0.2.0-rc-notes.md](docs/releases/v0.2.0-rc-notes.md)
+- Official releases and version tags: [GitHub Releases](https://github.com/fatihemres/SteamAPI/releases)
 
 *Valve, Steam, and the Steam logo are trademarks and/or registered trademarks of Valve Corporation in the U.S. and/or other countries. All other trademarks are the property of their respective owners.*
