@@ -1,6 +1,7 @@
 using HtmlAgilityPack;
 using Infrastructer.Steam.CustomTypes;
 using Infrastructer.Steam.Enumerations;
+using Infrastructer.Steam.Exceptions;
 using Infrastructer.Steam.Services.Abstraction;
 using System.Globalization;
 
@@ -64,7 +65,7 @@ namespace Infrastructer.Steam.Services.Implementation
             // If upstream provided match elements but none could be parsed, fail explicitly
             if (listingNodes.Any() && results.Count == 0)
             {
-                throw new InvalidOperationException("Detected upstream Steam search markup failure; matched listing elements could not be parsed.");
+                throw new SteamResponseParseException("Detected upstream Steam search markup failure; matched listing elements could not be parsed.");
             }
 
             return results;

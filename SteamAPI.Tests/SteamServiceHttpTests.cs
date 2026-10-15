@@ -9,6 +9,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Infrastructer.Steam.CustomTypes;
 using Infrastructer.Steam.Enumerations;
+using Infrastructer.Steam.Exceptions;
 using Infrastructer.Steam.Services.Abstraction;
 using Infrastructer.Steam.Services.Implementation;
 using Xunit;
@@ -229,15 +230,15 @@ namespace SteamAPI.Tests
         }
 
         [Fact]
-        public async Task GetListingsAsync_MatchedNodesUnparseable_ThrowsInvalidOperationException()
+        public async Task GetListingsAsync_MatchedNodesUnparseable_ThrowsSteamResponseParseException()
         {
             // If markup contains matched nodes with class 'match' but none can be parsed into valid listings,
-            // existing ParseResponse behavior explicitly throws InvalidOperationException.
+            // existing ParseResponse behavior explicitly throws SteamResponseParseException.
             var unparseableMatchHtml = "<a class=\"match\">Malformed without appId or name</a>";
             var (service, _) = CreateTestService((req, ct) =>
                 new HttpResponseMessage(HttpStatusCode.OK) { Content = new StringContent(unparseableMatchHtml) });
 
-            await Assert.ThrowsAsync<InvalidOperationException>(() =>
+            await Assert.ThrowsAsync<SteamResponseParseException>(() =>
                 service.GetListingsAsync("malformed", Culture.en_US));
         }
 

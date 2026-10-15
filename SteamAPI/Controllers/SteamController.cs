@@ -1,5 +1,6 @@
 using Infrastructer.Steam.CustomTypes;
 using Infrastructer.Steam.Enumerations;
+using Infrastructer.Steam.Exceptions;
 using Infrastructer.Steam.Services.Abstraction;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -35,6 +36,10 @@ namespace SteamAPI.Controllers
                 {
                     ModelState.AddModelError(nameof(request.Game), "The Game field is required and cannot be empty or whitespace-only.");
                 }
+                else if (request.Game.Length > 200)
+                {
+                    ModelState.AddModelError(nameof(request.Game), "The Game field cannot exceed 200 characters.");
+                }
 
                 if (!Enum.IsDefined(typeof(Culture), request.Culture))
                 {
@@ -56,6 +61,15 @@ namespace SteamAPI.Controllers
             {
                 var result = await _steamService.GetListingsAsync(request!.Game, request.Culture, cancellationToken);
                 return Ok(result);
+            }
+            catch (SteamResponseParseException)
+            {
+                return StatusCode(StatusCodes.Status502BadGateway, new ProblemDetails
+                {
+                    Status = StatusCodes.Status502BadGateway,
+                    Title = "Bad Gateway",
+                    Detail = "The upstream Steam search service returned unparseable or unrecognized markup."
+                });
             }
             catch (HttpRequestException)
             {
