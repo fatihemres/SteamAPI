@@ -3,26 +3,37 @@ using Infrastructer.Steam.CustomTypes;
 using Infrastructer.Steam.Enumerations;
 using Infrastructer.Steam.Services.Abstraction;
 using System.Globalization;
-using System.Net;
 
 namespace Infrastructer.Steam.Services.Implementation
 {
     public class SteamService : ISteamService
     {
+        private readonly HttpClient _httpClient;
         private readonly ICultureService _cultureService;
 
-        public SteamService(ICultureService cultureService)
+        public SteamService(HttpClient httpClient, ICultureService cultureService)
         {
-            _cultureService = cultureService;
+            _httpClient = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
+            _cultureService = cultureService ?? throw new ArgumentNullException(nameof(cultureService));
         }
 
-        public List<Listing> GetListings(string game, Culture culture)
+        public async Task<List<Listing>> GetListingsAsync(string game, Culture culture, CancellationToken cancellationToken = default)
         {
-            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
-            var cultureInfo = _cultureService.GetCultureValue(culture);
-            string response = new WebClient().DownloadString($"https://store.steampowered.com/search/suggest?term={game}&f=games&cc={cultureInfo.CultureShortName}&lang={cultureInfo.CultureName}&v=2286217");
+            cancellationToken.ThrowIfCancellationRequested();
 
-            return ParseResponse(response, cultureInfo.CultureInfo);
+            var cultureInfo = _cultureService.GetCultureValue(culture);
+            var encodedTerm = Uri.EscapeDataString(game ?? string.Empty);
+            var relativePath = $"search/suggest?term={encodedTerm}&f=games&cc={cultureInfo.CultureShortName}&lang={cultureInfo.CultureName}&v=2286217";
+
+            var requestUri = _httpClient.BaseAddress != null
+                ? new Uri(relativePath, UriKind.Relative)
+                : new Uri($"https://store.steampowered.com/{relativePath}", UriKind.Absolute);
+
+            using var response = await _httpClient.GetAsync(requestUri, HttpCompletionOption.ResponseContentRead, cancellationToken).ConfigureAwait(false);
+            response.EnsureSuccessStatusCode();
+
+            var responseContent = await response.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false);
+            return ParseResponse(responseContent, cultureInfo.CultureInfo);
         }
 
         internal static List<Listing> ParseResponse(string response, CultureInfo cultureInfo)

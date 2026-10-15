@@ -18,9 +18,9 @@ namespace SteamAPI.Controllers
 
 
         [HttpPost(Name = "steamGameInfo")]
-        public IEnumerable<Listing> GetByCulture([FromBody] GetSteamGameInfoRequestModel request)
+        public async Task<IEnumerable<Listing>> GetByCulture([FromBody] GetSteamGameInfoRequestModel request, CancellationToken cancellationToken)
         {
-            var result = _steamService.GetListings(request.Game, request.Culture);
+            var result = await _steamService.GetListingsAsync(request.Game, request.Culture, cancellationToken);
             return result;
         }
     }

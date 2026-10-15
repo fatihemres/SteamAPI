@@ -11,7 +11,11 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddSingleton<ICultureService, CultureService>();
-builder.Services.AddScoped<ISteamService, SteamService>();
+builder.Services.AddHttpClient<ISteamService, SteamService>(client =>
+{
+    client.BaseAddress = new Uri("https://store.steampowered.com/");
+    client.Timeout = TimeSpan.FromSeconds(30);
+});
 
 var app = builder.Build();
 

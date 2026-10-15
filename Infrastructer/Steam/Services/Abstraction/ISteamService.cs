@@ -6,6 +6,6 @@ namespace Infrastructer.Steam.Services.Abstraction
     public interface ISteamService
     {
 
-        List<Listing> GetListings(string game, Culture culture);
+        Task<List<Listing>> GetListingsAsync(string game, Culture culture, CancellationToken cancellationToken = default);
     }
 }
