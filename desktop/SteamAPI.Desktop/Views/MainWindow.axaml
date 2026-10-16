@@ -1,0 +1,115 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:SteamAPI.Desktop.ViewModels"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d" d:DesignWidth="1100" d:DesignHeight="750"
+        x:Class="SteamAPI.Desktop.Views.MainWindow"
+        x:DataType="vm:MainWindowViewModel"
+        Icon="/Assets/avalonia-logo.ico"
+        Title="SteamAPI Desktop — v0.1.0 RC"
+        Width="1120" Height="780"
+        MinWidth="960" MinHeight="620"
+        WindowStartupLocation="CenterScreen"
+        Background="{StaticResource SteamBackgroundBrush}">
+
+    <Grid RowDefinitions="Auto,*,Auto">
+        <!-- Top Navigation Bar -->
+        <Border Grid.Row="0" Background="{StaticResource SteamSurfaceBrush}"
+                BorderBrush="{StaticResource SteamBorderBrush}" BorderThickness="0,0,0,1"
+                Padding="16,10">
+            <Grid ColumnDefinitions="Auto,*,Auto">
+                <!-- Brand Title -->
+                <StackPanel Grid.Column="0" Orientation="Horizontal" Spacing="10" VerticalAlignment="Center">
+                    <Border Background="#162231" CornerRadius="8" Width="36" Height="36" VerticalAlignment="Center">
+                        <TextBlock Text="🎮" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </Border>
+                    <StackPanel VerticalAlignment="Center">
+                        <TextBlock Text="SteamAPI Desktop" FontWeight="Bold" FontSize="15"
+                                   Foreground="{StaticResource SteamTextPrimaryBrush}"/>
+                        <TextBlock Text="v0.1.0 RC" FontSize="11" Foreground="{StaticResource SteamAccentBrush}" FontWeight="SemiBold"/>
+                    </StackPanel>
+                </StackPanel>
+
+                <!-- Navigation Tabs -->
+                <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Center" Spacing="8">
+                    <Button Classes.accent="{Binding IsExplorerActive}"
+                            Classes.secondary="{Binding !IsExplorerActive}"
+                            Command="{Binding SelectTabCommand}"
+                            CommandParameter="0"
+                            Padding="14,8">
+                        <StackPanel Orientation="Horizontal" Spacing="6">
+                            <TextBlock Text="🎮"/>
+                            <TextBlock Text="Game Explorer" FontWeight="SemiBold"/>
+                        </StackPanel>
+                    </Button>
+
+                    <Button Classes.accent="{Binding IsInspectorActive}"
+                            Classes.secondary="{Binding !IsInspectorActive}"
+                            Command="{Binding SelectTabCommand}"
+                            CommandParameter="1"
+                            Padding="14,8">
+                        <StackPanel Orientation="Horizontal" Spacing="6">
+                            <TextBlock Text="🔍"/>
+                            <TextBlock Text="API Inspector" FontWeight="SemiBold"/>
+                        </StackPanel>
+                    </Button>
+
+                    <Button Classes.accent="{Binding IsSettingsActive}"
+                            Classes.secondary="{Binding !IsSettingsActive}"
+                            Command="{Binding SelectTabCommand}"
+                            CommandParameter="2"
+                            Padding="14,8">
+                        <StackPanel Orientation="Horizontal" Spacing="6">
+                            <TextBlock Text="⚙️"/>
+                            <TextBlock Text="Settings" FontWeight="SemiBold"/>
+                        </StackPanel>
+                    </Button>
+
+                    <Button Classes.accent="{Binding IsAboutActive}"
+                            Classes.secondary="{Binding !IsAboutActive}"
+                            Command="{Binding SelectTabCommand}"
+                            CommandParameter="3"
+                            Padding="14,8">
+                        <StackPanel Orientation="Horizontal" Spacing="6">
+                            <TextBlock Text="ℹ️"/>
+                            <TextBlock Text="About" FontWeight="SemiBold"/>
+                        </StackPanel>
+                    </Button>
+                </StackPanel>
+
+                <!-- Status Pill -->
+                <Border Grid.Column="2" VerticalAlignment="Center" CornerRadius="12" Padding="12,6">
+                    <Border.Background>
+                        <SolidColorBrush Color="#162231"/>
+                    </Border.Background>
+                    <StackPanel Orientation="Horizontal" Spacing="8">
+                        <!-- Dot Indicator -->
+                        <Ellipse Width="8" Height="8" VerticalAlignment="Center"
+                                 Fill="{StaticResource SteamAccentBrush}"/>
+                        <TextBlock Text="{Binding ApiStatusText}" FontSize="12"
+                                   Foreground="{StaticResource SteamTextPrimaryBrush}" FontWeight="SemiBold"/>
+                    </StackPanel>
+                </Border>
+            </Grid>
+        </Border>
+
+        <!-- Main Content (Swapped by ViewLocator based on CurrentView) -->
+        <ContentControl Grid.Row="1" Content="{Binding CurrentView}"/>
+
+        <!-- Bottom Status Bar -->
+        <Border Grid.Row="2" Background="{StaticResource SteamSurfaceBrush}"
+                BorderBrush="{StaticResource SteamBorderBrush}" BorderThickness="0,1,0,0"
+                Padding="16,6">
+            <Grid ColumnDefinitions="Auto,*,Auto">
+                <TextBlock Grid.Column="0" Text="{Binding ApiStatusText}" FontSize="11"
+                           Foreground="{StaticResource SteamTextSecondaryBrush}" VerticalAlignment="Center"/>
+                <TextBlock Grid.Column="1" Text="Created by Fatih Emre Sarman" FontSize="11"
+                           Foreground="{StaticResource SteamTextSecondaryBrush}"
+                           HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                <TextBlock Grid.Column="2" Text="Not affiliated with Valve Corporation."
+                           FontSize="11" Foreground="{StaticResource SteamTextSecondaryBrush}" VerticalAlignment="Center"/>
+            </Grid>
+        </Border>
+    </Grid>
+</Window>

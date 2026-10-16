@@ -1,0 +1,175 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:SteamAPI.Desktop.ViewModels"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="1000" d:DesignHeight="600"
+             x:Class="SteamAPI.Desktop.Views.AboutView"
+             x:DataType="vm:AboutViewModel">
+
+    <ScrollViewer Margin="24">
+        <StackPanel MaxWidth="800" HorizontalAlignment="Center" Spacing="20">
+            <!-- Header Brand Card -->
+            <Border Classes="card" Background="#162231">
+                <Grid ColumnDefinitions="Auto,*">
+                    <Border Grid.Column="0" Background="#0E141B" CornerRadius="12" Width="64" Height="64"
+                            VerticalAlignment="Center" Margin="0,0,20,0">
+                        <TextBlock Text="🎮" FontSize="36" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </Border>
+
+                    <StackPanel Grid.Column="1" VerticalAlignment="Center" Spacing="4">
+                        <StackPanel Orientation="Horizontal" Spacing="10">
+                            <TextBlock Text="SteamAPI Desktop" FontSize="22" FontWeight="Bold"
+                                       Foreground="{StaticResource SteamTextPrimaryBrush}"/>
+                            <Border Background="#1B4965" CornerRadius="4" Padding="6,2" VerticalAlignment="Center">
+                                <TextBlock Text="{Binding AppVersion}" FontSize="11" FontWeight="Bold" Foreground="#62B6CB"/>
+                            </Border>
+                        </StackPanel>
+                        <TextBlock Text="Standalone desktop game explorer, contract inspector, and telemetry monitor for SteamAPI."
+                                   Foreground="{StaticResource SteamTextSecondaryBrush}" FontSize="13"/>
+                    </StackPanel>
+                </Grid>
+            </Border>
+
+            <!-- Creator & Software Authorship Card -->
+            <Border Classes="card" Background="#162231" BorderBrush="#2A3F5A">
+                <Grid ColumnDefinitions="Auto,*,Auto">
+                    <Border Grid.Column="0" Background="#0E141B" BorderBrush="#2A3F5A" BorderThickness="1"
+                            CornerRadius="24" Width="48" Height="48" VerticalAlignment="Center" Margin="0,0,16,0">
+                        <TextBlock Text="💻" FontSize="24" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </Border>
+
+                    <StackPanel Grid.Column="1" VerticalAlignment="Center" Spacing="2">
+                        <TextBlock Text="{Binding CreatorTitle}" FontSize="11" FontWeight="Bold"
+                                   Foreground="{StaticResource SteamAccentBrush}"/>
+                        <TextBlock Text="{Binding CreatorName}" FontSize="17" FontWeight="Bold"
+                                   Foreground="{StaticResource SteamTextPrimaryBrush}"/>
+                        <TextBlock Text="{Binding CreatorGitHub}" FontSize="12"
+                                   Foreground="{StaticResource SteamTextSecondaryBrush}"/>
+                    </StackPanel>
+
+                    <Button Grid.Column="2" Classes="secondary"
+                            Command="{Binding OpenCreatorProfileCommand}"
+                            Content="🌐 GitHub Profile" FontSize="12" Padding="12,6"
+                            VerticalAlignment="Center"/>
+                </Grid>
+            </Border>
+
+            <!-- Card 1: Technical Specifications -->
+            <Border Classes="card">
+                <StackPanel Spacing="12">
+                    <TextBlock Text="TECHNICAL SPECIFICATIONS" FontSize="12" FontWeight="Bold"
+                               Foreground="{StaticResource SteamAccentBrush}"/>
+
+                    <Grid ColumnDefinitions="200,*" RowDefinitions="Auto,Auto,Auto,Auto,Auto" Margin="4,0">
+                        <TextBlock Grid.Row="0" Grid.Column="0" Text="Desktop Client:" Foreground="{StaticResource SteamTextSecondaryBrush}" Margin="0,4"/>
+                        <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding AppVersion}" Foreground="{StaticResource SteamTextPrimaryBrush}" FontWeight="SemiBold" Margin="0,4"/>
+
+                        <TextBlock Grid.Row="1" Grid.Column="0" Text="Backend Compatibility:" Foreground="{StaticResource SteamTextSecondaryBrush}" Margin="0,4"/>
+                        <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding ApiCompatibilityVersion}" Foreground="{StaticResource SteamTextPrimaryBrush}" FontWeight="SemiBold" Margin="0,4"/>
+
+                        <TextBlock Grid.Row="2" Grid.Column="0" Text="Runtime Framework:" Foreground="{StaticResource SteamTextSecondaryBrush}" Margin="0,4"/>
+                        <TextBlock Grid.Row="2" Grid.Column="1" Text="{Binding FrameworkVersion}" Foreground="{StaticResource SteamTextPrimaryBrush}" FontWeight="SemiBold" Margin="0,4"/>
+
+                        <TextBlock Grid.Row="3" Grid.Column="0" Text="Software License:" Foreground="{StaticResource SteamTextSecondaryBrush}" Margin="0,4"/>
+                        <TextBlock Grid.Row="3" Grid.Column="1" Text="{Binding LicenseType}" Foreground="{StaticResource SteamAccentBrush}" FontWeight="SemiBold" Margin="0,4"/>
+
+                        <TextBlock Grid.Row="4" Grid.Column="0" Text="Cost Profile:" Foreground="{StaticResource SteamTextSecondaryBrush}" Margin="0,4"/>
+                        <TextBlock Grid.Row="4" Grid.Column="1" Text="$0.00 / Zero Mandatory Recurring Costs" Foreground="{StaticResource SteamSuccessBrush}" FontWeight="SemiBold" Margin="0,4"/>
+                    </Grid>
+                </StackPanel>
+            </Border>
+
+            <!-- Card 2: Supported Steam Storefront Markets -->
+            <Border Classes="card">
+                <StackPanel Spacing="12">
+                    <TextBlock Text="SUPPORTED STOREFRONT MARKETS" FontSize="12" FontWeight="Bold"
+                               Foreground="{StaticResource SteamAccentBrush}"/>
+
+                    <Grid ColumnDefinitions="*,*,*" Margin="4,0">
+                        <!-- Turkey -->
+                        <Border Grid.Column="0" Background="#162231" BorderBrush="#2A3F5A" BorderThickness="1"
+                                CornerRadius="6" Padding="12" Margin="0,0,6,0">
+                            <StackPanel Spacing="4">
+                                <TextBlock Text="🇹🇷 Turkey (TR)" FontWeight="Bold" Foreground="{StaticResource SteamTextPrimaryBrush}"/>
+                                <TextBlock Text="Culture ID: 1" FontSize="11" Foreground="{StaticResource SteamAccentBrush}"/>
+                                <TextBlock Text="Primary targeted market" FontSize="11" Foreground="{StaticResource SteamTextSecondaryBrush}"/>
+                            </StackPanel>
+                        </Border>
+
+                        <!-- United States -->
+                        <Border Grid.Column="1" Background="#162231" BorderBrush="#2A3F5A" BorderThickness="1"
+                                CornerRadius="6" Padding="12" Margin="3,0,3,0">
+                            <StackPanel Spacing="4">
+                                <TextBlock Text="🇺🇸 United States (US)" FontWeight="Bold" Foreground="{StaticResource SteamTextPrimaryBrush}"/>
+                                <TextBlock Text="Culture ID: 2" FontSize="11" Foreground="{StaticResource SteamAccentBrush}"/>
+                                <TextBlock Text="Validation &amp; baseline market" FontSize="11" Foreground="{StaticResource SteamTextSecondaryBrush}"/>
+                            </StackPanel>
+                        </Border>
+
+                        <!-- Spain -->
+                        <Border Grid.Column="2" Background="#162231" BorderBrush="#2A3F5A" BorderThickness="1"
+                                CornerRadius="6" Padding="12" Margin="6,0,0,0">
+                            <StackPanel Spacing="4">
+                                <TextBlock Text="🇪🇸 Spain (ES)" FontWeight="Bold" Foreground="{StaticResource SteamTextPrimaryBrush}"/>
+                                <TextBlock Text="Culture ID: 3" FontSize="11" Foreground="{StaticResource SteamAccentBrush}"/>
+                                <TextBlock Text="European validation market" FontSize="11" Foreground="{StaticResource SteamTextSecondaryBrush}"/>
+                            </StackPanel>
+                        </Border>
+                    </Grid>
+                </StackPanel>
+            </Border>
+
+            <!-- Card 3: Legal Disclaimers -->
+            <Border Classes="card">
+                <StackPanel Spacing="10">
+                    <TextBlock Text="LEGAL &amp; TRADEMARK NOTICES" FontSize="12" FontWeight="Bold"
+                               Foreground="{StaticResource SteamAccentBrush}"/>
+
+                    <Border Background="#162231" BorderBrush="#2A3F5A" BorderThickness="1" CornerRadius="6" Padding="12">
+                        <StackPanel Spacing="6">
+                            <TextBlock Text="Valve Corporation Trademark Disclaimer" FontWeight="Bold" FontSize="12"
+                                       Foreground="{StaticResource SteamTextPrimaryBrush}"/>
+                            <TextBlock Text="SteamAPI and SteamAPI Desktop are independent open-source developer tools. They are not affiliated with, authorized, maintained, sponsored, or endorsed by Valve Corporation or any of its affiliates. Steam, the Steam logo, and related trademarks are the registered property of Valve Corporation in the United States and other countries."
+                                       Foreground="{StaticResource SteamTextSecondaryBrush}" FontSize="11" TextWrapping="Wrap"/>
+                        </StackPanel>
+                    </Border>
+
+                    <Border Background="#162231" BorderBrush="#2A3F5A" BorderThickness="1" CornerRadius="6" Padding="12">
+                        <StackPanel Spacing="6">
+                            <TextBlock Text="{Binding CopyrightNotice}" FontWeight="SemiBold"
+                                       Foreground="{StaticResource SteamTextPrimaryBrush}" FontSize="11"/>
+                            <TextBlock Text="Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files, to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software."
+                                       Foreground="{StaticResource SteamTextSecondaryBrush}" FontSize="11" TextWrapping="Wrap"/>
+                        </StackPanel>
+                    </Border>
+                </StackPanel>
+            </Border>
+
+            <!-- Card 4: Links -->
+            <Border Classes="card">
+                <StackPanel Spacing="12">
+                    <TextBlock Text="RESOURCES &amp; REPOSITORY" FontSize="12" FontWeight="Bold"
+                               Foreground="{StaticResource SteamAccentBrush}"/>
+
+                    <Grid ColumnDefinitions="*,*,*">
+                        <Button Grid.Column="0" Classes="secondary" Margin="0,0,6,0"
+                                HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"
+                                Command="{Binding OpenGitHubRepoCommand}"
+                                Content="🌐 GitHub Repository"/>
+
+                        <Button Grid.Column="1" Classes="secondary" Margin="3,0,3,0"
+                                HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"
+                                Command="{Binding OpenGitHubReleasesCommand}"
+                                Content="📦 GitHub Releases"/>
+
+                        <Button Grid.Column="2" Classes="secondary" Margin="6,0,0,0"
+                                HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"
+                                Command="{Binding OpenApiDocsCommand}"
+                                Content="📖 API Documentation"/>
+                    </Grid>
+                </StackPanel>
+            </Border>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

@@ -1,0 +1,146 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:SteamAPI.Desktop.ViewModels"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="1000" d:DesignHeight="600"
+             x:Class="SteamAPI.Desktop.Views.SettingsView"
+             x:DataType="vm:SettingsViewModel">
+
+    <ScrollViewer Margin="24">
+        <StackPanel MaxWidth="800" HorizontalAlignment="Center" Spacing="20">
+            <!-- Header -->
+            <StackPanel Spacing="4">
+                <TextBlock Text="Application Settings" FontSize="22" FontWeight="Bold"
+                           Foreground="{StaticResource SteamTextPrimaryBrush}"/>
+                <TextBlock Text="Configure API connectivity, child process management, and offline simulation mode."
+                           Foreground="{StaticResource SteamTextSecondaryBrush}" FontSize="13"/>
+            </StackPanel>
+
+            <!-- Card 1: API Endpoint Configuration -->
+            <Border Classes="card">
+                <StackPanel Spacing="14">
+                    <TextBlock Text="STEAMAPI ENDPOINT" FontSize="12" FontWeight="Bold"
+                               Foreground="{StaticResource SteamAccentBrush}"/>
+
+                    <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto,Auto">
+                        <StackPanel Grid.Row="0" Grid.Column="0" Spacing="4" Margin="0,0,12,0">
+                            <TextBlock Text="API Base URL:" FontSize="13" Foreground="{StaticResource SteamTextPrimaryBrush}"/>
+                            <TextBox Text="{Binding ApiBaseUrl, Mode=TwoWay}"
+                                     FontSize="13" Padding="10,8" CornerRadius="6"
+                                     PlaceholderText="http://localhost:5271 or https://localhost:7030"/>
+                        </StackPanel>
+
+                        <StackPanel Grid.Row="0" Grid.Column="1" Spacing="4" Width="140">
+                            <TextBlock Text="Timeout (seconds):" FontSize="13" Foreground="{StaticResource SteamTextPrimaryBrush}"/>
+                            <NumericUpDown Value="{Binding TimeoutSeconds, Mode=TwoWay}"
+                                           Minimum="5" Maximum="120" Increment="5"
+                                           CornerRadius="6"/>
+                        </StackPanel>
+                    </Grid>
+
+                    <!-- Test Connection Strip -->
+                    <Grid ColumnDefinitions="Auto,*">
+                        <Button Grid.Column="0" Classes="secondary"
+                                Command="{Binding TestConnectionCommand}"
+                                Content="🔌 Test Connection"
+                                Margin="0,0,12,0"/>
+
+                        <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                            <TextBlock Text="{Binding ConnectionStatusMessage}"
+                                       FontSize="12"
+                                       Foreground="{StaticResource SteamTextSecondaryBrush}"
+                                       IsVisible="{Binding ConnectionStatusMessage, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"/>
+                        </StackPanel>
+                    </Grid>
+                </StackPanel>
+            </Border>
+
+            <!-- Card 2: Bundled Loopback Server -->
+            <Border Classes="card">
+                <StackPanel Spacing="14">
+                    <TextBlock Text="BUNDLED LOOPBACK SERVER (LOCAL API HOST)" FontSize="12" FontWeight="Bold"
+                               Foreground="{StaticResource SteamAccentBrush}"/>
+
+                    <TextBlock Text="SteamAPI Desktop can launch the bundled ASP.NET Core SteamAPI backend as a supervised local child process."
+                               Foreground="{StaticResource SteamTextSecondaryBrush}" FontSize="12" TextWrapping="Wrap"/>
+
+                    <Grid ColumnDefinitions="Auto,*,Auto">
+                        <!-- Process State Pill -->
+                        <Border Grid.Column="0" Background="#162231" BorderBrush="#2A3F5A" BorderThickness="1"
+                                CornerRadius="6" Padding="12,8" VerticalAlignment="Center" Margin="0,0,12,0">
+                            <StackPanel Orientation="Horizontal" Spacing="8">
+                                <TextBlock Text="Status:" Foreground="{StaticResource SteamTextSecondaryBrush}" FontSize="12"/>
+                                <TextBlock Text="{Binding ApiProcessStateText}" FontWeight="Bold" FontSize="12"
+                                           Foreground="{StaticResource SteamAccentBrush}"/>
+                            </StackPanel>
+                        </Border>
+
+                        <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                            <TextBlock Text="Binds strictly to http://127.0.0.1:5271 with port conflict detection."
+                                       FontSize="11" Foreground="{StaticResource SteamTextSecondaryBrush}"/>
+                        </StackPanel>
+
+                        <!-- Controls -->
+                        <StackPanel Grid.Column="2" Orientation="Horizontal" Spacing="8">
+                            <Button Classes="accent" Command="{Binding StartApiProcessCommand}"
+                                    Content="▶ Start Server" FontSize="12"/>
+                            <Button Classes="secondary" Command="{Binding StopApiProcessCommand}"
+                                    Content="⏹ Stop Server" FontSize="12"/>
+                        </StackPanel>
+                    </Grid>
+
+                    <!-- Process Error Banner -->
+                    <Border Background="#3E1A1A" BorderBrush="{StaticResource SteamErrorBrush}"
+                            BorderThickness="1" CornerRadius="6" Padding="10,8"
+                            IsVisible="{Binding ApiProcessError, Converter={x:Static StringConverters.IsNotNullOrEmpty}}">
+                        <TextBlock Text="{Binding ApiProcessError, StringFormat='Process Error: {0}'}"
+                                   Foreground="{StaticResource SteamErrorBrush}" FontSize="12"/>
+                    </Border>
+
+                    <!-- Auto-start checkbox -->
+                    <CheckBox IsChecked="{Binding AutoStartApi, Mode=TwoWay}"
+                              Content="Automatically start loopback server when desktop application launches"
+                              FontSize="12"/>
+                </StackPanel>
+            </Border>
+
+            <!-- Card 3: Offline Demo Mode -->
+            <Border Classes="card">
+                <StackPanel Spacing="12">
+                    <TextBlock Text="OFFLINE DEMO SIMULATION" FontSize="12" FontWeight="Bold"
+                               Foreground="{StaticResource SteamAccentBrush}"/>
+
+                    <ToggleSwitch IsChecked="{Binding IsDemoMode, Mode=TwoWay}"
+                                  OnContent="Demo Mode Active (Zero Network Calls)"
+                                  OffContent="Demo Mode Disabled (Live Network Calls)"
+                                  FontSize="13"/>
+
+                    <TextBlock Text="When Demo Mode is enabled, the desktop application serves realistic synthetic Steam catalog responses without connecting to any external server or live Steam endpoints. Ideal for offline demos, isolated verification, and UI evaluation."
+                               Foreground="{StaticResource SteamTextSecondaryBrush}" FontSize="12" TextWrapping="Wrap"/>
+                </StackPanel>
+            </Border>
+
+            <!-- Card 4: Action Footer -->
+            <Border Classes="card">
+                <Grid ColumnDefinitions="*,Auto,Auto">
+                    <!-- Feedback Toast -->
+                    <TextBlock Grid.Column="0" Text="{Binding SaveFeedbackMessage}"
+                               Foreground="{StaticResource SteamSuccessBrush}"
+                               FontWeight="SemiBold" FontSize="13" VerticalAlignment="Center"
+                               IsVisible="{Binding SaveFeedbackMessage, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"/>
+
+                    <Button Grid.Column="1" Classes="secondary"
+                            Command="{Binding ResetDefaultsCommand}"
+                            Content="↺ Reset Defaults"
+                            Margin="0,0,10,0"/>
+
+                    <Button Grid.Column="2" Classes="accent"
+                            Command="{Binding SaveSettingsCommand}"
+                            Content="💾 Save Settings" Width="140"
+                            HorizontalContentAlignment="Center"/>
+                </Grid>
+            </Border>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

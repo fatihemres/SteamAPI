@@ -1,0 +1,296 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:SteamAPI.Desktop.ViewModels"
+             xmlns:models="using:SteamAPI.Desktop.Models"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="1000" d:DesignHeight="600"
+             x:Class="SteamAPI.Desktop.Views.GameExplorerView"
+             x:DataType="vm:GameExplorerViewModel">
+
+    <Grid RowDefinitions="Auto,Auto,*" Margin="24">
+        <!-- Top Search Bar -->
+        <Border Grid.Row="0" Classes="card" Margin="0,0,0,16">
+            <Grid ColumnDefinitions="*,Auto,Auto,Auto">
+                <!-- Search Query Box -->
+                <TextBox Grid.Column="0"
+                         Text="{Binding SearchQuery, Mode=TwoWay}"
+                         PlaceholderText="Search Steam catalog by title (e.g., Portal, Half-Life, Witcher, Cyberpunk)..."
+                         FontSize="14"
+                         Padding="12,10"
+                         CornerRadius="6"
+                         Margin="0,0,12,0"/>
+
+                <ComboBox Grid.Column="1"
+                          ItemsSource="{Binding Cultures}"
+                          SelectedItem="{Binding SelectedCulture}"
+                          MinWidth="260"
+                          Width="285"
+                          Padding="8,8"
+                          CornerRadius="6"
+                          Margin="0,0,12,0">
+                    <ComboBox.ItemTemplate>
+                        <DataTemplate x:DataType="models:SteamCulture">
+                            <StackPanel Orientation="Horizontal" Spacing="6">
+                                <TextBlock Text="{Binding FlagEmoji}"/>
+                                <TextBlock Text="{Binding CountryCode}" FontWeight="Bold" Foreground="{StaticResource SteamAccentBrush}"/>
+                                <TextBlock Text="—"/>
+                                <TextBlock Text="{Binding DisplayName}"/>
+                            </StackPanel>
+                        </DataTemplate>
+                    </ComboBox.ItemTemplate>
+                </ComboBox>
+
+                <!-- Search Button -->
+                <Button Grid.Column="2"
+                        Classes="accent"
+                        Command="{Binding SearchCommand}"
+                        Content="Search"
+                        Margin="0,0,8,0"
+                        Width="100"
+                        HorizontalContentAlignment="Center"/>
+
+                <!-- Clear Button -->
+                <Button Grid.Column="3"
+                        Classes="secondary"
+                        Command="{Binding ClearSearchCommand}"
+                        Content="Clear"
+                        Width="70"
+                        HorizontalContentAlignment="Center"/>
+            </Grid>
+        </Border>
+
+        <!-- Status / Banners Strip -->
+        <StackPanel Grid.Row="1" Spacing="8" Margin="0,0,0,12">
+            <!-- Offline Demo Banner -->
+            <Border Background="#3B2A10" BorderBrush="{StaticResource SteamWarningBrush}"
+                    BorderThickness="1" CornerRadius="6" Padding="12,8"
+                    IsVisible="{Binding IsDemoMode}">
+                <StackPanel Orientation="Horizontal" Spacing="8">
+                    <TextBlock Text="⚡" FontWeight="Bold" Foreground="{StaticResource SteamWarningBrush}"/>
+                    <TextBlock Text="Offline Demo Mode is ACTIVE — Results are synthetic test fixtures (zero external network calls)."
+                               Foreground="{StaticResource SteamWarningBrush}" FontWeight="SemiBold"/>
+                </StackPanel>
+            </Border>
+
+            <!-- Error Banner -->
+            <Border Background="#3E1A1A" BorderBrush="{StaticResource SteamErrorBrush}"
+                    BorderThickness="1" CornerRadius="6" Padding="12,10"
+                    IsVisible="{Binding ErrorMessage, Converter={x:Static StringConverters.IsNotNullOrEmpty}}">
+                <StackPanel Spacing="4">
+                    <StackPanel Orientation="Horizontal" Spacing="8">
+                        <TextBlock Text="⚠️" Foreground="{StaticResource SteamErrorBrush}" FontWeight="Bold"/>
+                        <TextBlock Text="{Binding ErrorMessage}" Foreground="{StaticResource SteamErrorBrush}" FontWeight="Bold"/>
+                    </StackPanel>
+                    <TextBlock Text="{Binding ErrorDetail}" Foreground="{StaticResource SteamTextSecondaryBrush}"
+                               FontSize="12" Margin="24,0,0,0"
+                               IsVisible="{Binding ErrorDetail, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"/>
+                </StackPanel>
+            </Border>
+
+            <!-- Search Status Summary -->
+            <Grid ColumnDefinitions="*,Auto" IsVisible="{Binding StatusMessage, Converter={x:Static StringConverters.IsNotNullOrEmpty}}">
+                <TextBlock Grid.Column="0" Text="{Binding StatusMessage}" Foreground="{StaticResource SteamTextSecondaryBrush}" FontSize="13"/>
+                <ProgressBar Grid.Column="1" IsIndeterminate="True" Width="120" Height="4"
+                             IsVisible="{Binding IsSearching}"/>
+            </Grid>
+        </StackPanel>
+
+        <!-- Results & Inspector Split View -->
+        <Grid Grid.Row="2" ColumnDefinitions="*,Auto">
+            <!-- Results List (Left) -->
+            <Border Grid.Column="0" Classes="card" Padding="8">
+                <Grid>
+                    <!-- Empty Initial State -->
+                    <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" Spacing="8"
+                                IsVisible="{Binding !HasSearched}">
+                        <TextBlock Text="🎮" FontSize="48" HorizontalAlignment="Center" Opacity="0.6"/>
+                        <TextBlock Text="Search the Steam Catalog" FontSize="18" FontWeight="SemiBold"
+                                   Foreground="{StaticResource SteamTextPrimaryBrush}" HorizontalAlignment="Center"/>
+                        <TextBlock Text="Type a game title in the search bar above to inspect live or demo results."
+                                   Foreground="{StaticResource SteamTextSecondaryBrush}" HorizontalAlignment="Center"/>
+                    </StackPanel>
+
+                    <!-- No Results State -->
+                    <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" Spacing="8"
+                                IsVisible="{Binding HasSearched}">
+                        <StackPanel.IsVisible>
+                            <MultiBinding Converter="{x:Static BoolConverters.And}">
+                                <Binding Path="HasSearched"/>
+                                <Binding Path="!Listings.Count"/>
+                                <Binding Path="!IsSearching"/>
+                            </MultiBinding>
+                        </StackPanel.IsVisible>
+                        <TextBlock Text="🔍" FontSize="40" HorizontalAlignment="Center" Opacity="0.5"/>
+                        <TextBlock Text="No games matched your query" FontSize="16" FontWeight="SemiBold"
+                                   Foreground="{StaticResource SteamTextPrimaryBrush}" HorizontalAlignment="Center"/>
+                        <TextBlock Text="Try searching for another keyword or check another storefront culture."
+                                   Foreground="{StaticResource SteamTextSecondaryBrush}" HorizontalAlignment="Center"/>
+                    </StackPanel>
+
+                    <!-- Results ListBox -->
+                    <ListBox ItemsSource="{Binding Listings}"
+                             SelectedItem="{Binding SelectedListing}"
+                             Background="Transparent"
+                             IsVisible="{Binding Listings.Count}">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate x:DataType="models:SteamGameListing">
+                                <Border Background="#162231" BorderBrush="#2A3F5A" BorderThickness="1"
+                                        CornerRadius="6" Padding="12,10" Margin="0,0,0,6">
+                                    <Grid ColumnDefinitions="Auto,*,Auto">
+                                        <!-- App ID Badge -->
+                                        <Border Grid.Column="0" Background="#0E141B" CornerRadius="4" Padding="6,4"
+                                                VerticalAlignment="Center" Margin="0,0,12,0" Width="70">
+                                            <TextBlock Text="{Binding AppId}" FontSize="11"
+                                                       Foreground="{StaticResource SteamAccentBrush}"
+                                                       HorizontalAlignment="Center" FontWeight="SemiBold"/>
+                                        </Border>
+
+                                        <!-- Title & Sale Type -->
+                                        <StackPanel Grid.Column="1" VerticalAlignment="Center" Spacing="3">
+                                            <TextBlock Text="{Binding Name}" FontWeight="SemiBold" FontSize="14"
+                                                       Foreground="{StaticResource SteamTextPrimaryBrush}"
+                                                       TextTrimming="CharacterEllipsis"/>
+                                            <StackPanel Orientation="Horizontal" Spacing="8">
+                                                <TextBlock Text="{Binding SaleTypeBadgeText}" FontSize="11"
+                                                           Foreground="{StaticResource SteamTextSecondaryBrush}"/>
+                                            </StackPanel>
+                                        </StackPanel>
+
+                                        <!-- Price Breakdown -->
+                                        <StackPanel Grid.Column="2" VerticalAlignment="Center" HorizontalAlignment="Right" Spacing="2">
+                                            <!-- Free Item -->
+                                            <Border Background="#1C3F4F" CornerRadius="3" Padding="6,2"
+                                                    HorizontalAlignment="Right"
+                                                    IsVisible="{Binding IsFree}">
+                                                <TextBlock Text="FREE TO PLAY" Foreground="{StaticResource SteamAccentBrush}"
+                                                           FontSize="11" FontWeight="Bold"/>
+                                            </Border>
+
+                                            <!-- Paid Item -->
+                                            <TextBlock Text="{Binding DisplayPrice}"
+                                                       Foreground="{StaticResource SteamTextPrimaryBrush}"
+                                                       FontWeight="Bold" FontSize="13"
+                                                       HorizontalAlignment="Right"
+                                                       IsVisible="{Binding IsPaid}"/>
+
+                                            <!-- Unavailable Item -->
+                                            <TextBlock Text="{Binding DisplayPrice}"
+                                                       Foreground="{StaticResource SteamTextSecondaryBrush}"
+                                                       FontSize="11"
+                                                       HorizontalAlignment="Right"
+                                                       IsVisible="{Binding IsUnavailable}"/>
+                                        </StackPanel>
+                                    </Grid>
+                                </Border>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+                </Grid>
+            </Border>
+
+            <!-- Selected Game Inspector Sheet (Right) -->
+            <Border Grid.Column="1" Classes="card" Width="360" Margin="16,0,0,0">
+                <Grid>
+                    <!-- Prompt when none selected -->
+                    <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" Spacing="8"
+                                IsVisible="{Binding SelectedListing, Converter={x:Static ObjectConverters.IsNull}}">
+                        <TextBlock Text="📑" FontSize="36" HorizontalAlignment="Center" Opacity="0.4"/>
+                        <TextBlock Text="Game Details Inspector" FontWeight="SemiBold" FontSize="15"
+                                   Foreground="{StaticResource SteamTextPrimaryBrush}" HorizontalAlignment="Center"/>
+                        <TextBlock Text="Click any game from the search list to inspect properties, copy links, or open in Steam."
+                                   Foreground="{StaticResource SteamTextSecondaryBrush}" FontSize="12"
+                                   TextWrapping="Wrap" TextAlignment="Center" Margin="20,0"/>
+                    </StackPanel>
+
+                    <!-- Selected Game Details -->
+                    <ScrollViewer IsVisible="{Binding SelectedListing, Converter={x:Static ObjectConverters.IsNotNull}}">
+                        <StackPanel Spacing="14">
+                            <!-- Title & App ID Header -->
+                            <StackPanel Spacing="4">
+                                <TextBlock Text="{Binding SelectedListing.Name}" FontSize="18" FontWeight="Bold"
+                                           Foreground="{StaticResource SteamTextPrimaryBrush}" TextWrapping="Wrap"/>
+                                <StackPanel Orientation="Horizontal" Spacing="8">
+                                    <Border Background="#0E141B" CornerRadius="4" Padding="6,2">
+                                        <TextBlock Text="{Binding SelectedListing.AppId, StringFormat='App ID: {0}'}"
+                                                   Foreground="{StaticResource SteamAccentBrush}" FontSize="12" FontWeight="SemiBold"/>
+                                    </Border>
+                                    <Border Background="#162231" CornerRadius="4" Padding="6,2">
+                                        <TextBlock Text="{Binding SelectedListing.SaleTypeBadgeText}"
+                                                   Foreground="{StaticResource SteamTextSecondaryBrush}" FontSize="12"/>
+                                    </Border>
+                                </StackPanel>
+                            </StackPanel>
+
+                            <Separator Background="{StaticResource SteamBorderBrush}" Height="1"/>
+
+                            <!-- Price Breakdown Card -->
+                            <Border Background="#162231" BorderBrush="#2A3F5A" BorderThickness="1"
+                                    CornerRadius="6" Padding="12">
+                                <StackPanel Spacing="8">
+                                    <TextBlock Text="PRICING &amp; SALE METADATA" FontSize="11" FontWeight="Bold"
+                                               Foreground="{StaticResource SteamAccentBrush}"/>
+
+                                    <Grid ColumnDefinitions="*,Auto">
+                                        <TextBlock Grid.Column="0" Text="Listing Price:" Foreground="{StaticResource SteamTextSecondaryBrush}"/>
+                                        <TextBlock Grid.Column="1" Text="{Binding SelectedListing.DisplayPrice}"
+                                                   Foreground="{StaticResource SteamAccentBrush}" FontSize="16" FontWeight="Bold"/>
+                                    </Grid>
+
+                                    <Grid ColumnDefinitions="*,Auto">
+                                        <TextBlock Grid.Column="0" Text="Sale Type Code:" Foreground="{StaticResource SteamTextSecondaryBrush}"/>
+                                        <TextBlock Grid.Column="1" Text="{Binding SelectedListing.SaleType, StringFormat='Type {0}'}"
+                                                   Foreground="{StaticResource SteamTextPrimaryBrush}" FontWeight="SemiBold"/>
+                                    </Grid>
+                                </StackPanel>
+                            </Border>
+
+                            <!-- Actions -->
+                            <StackPanel Spacing="8">
+                                <TextBlock Text="ACTIONS &amp; LAUNCHERS" FontSize="11" FontWeight="Bold"
+                                           Foreground="{StaticResource SteamAccentBrush}"/>
+
+                                <Button Classes="accent" HorizontalAlignment="Stretch"
+                                        Command="{Binding OpenInSteamCommand}"
+                                        Content="🚀 Open in Steam Client"/>
+
+                                <Button Classes="secondary" HorizontalAlignment="Stretch"
+                                        Command="{Binding OpenStoreLinkCommand}"
+                                        Content="🌐 View Store Webpage"/>
+
+                                <Grid ColumnDefinitions="*,*">
+                                    <Button Grid.Column="0" Classes="secondary" Margin="0,0,4,0"
+                                            HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"
+                                            Command="{Binding CopyAppIdCommand}"
+                                            Content="📋 Copy App ID"/>
+
+                                    <Button Grid.Column="1" Classes="secondary" Margin="4,0,0,0"
+                                            HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"
+                                            Command="{Binding CopyStoreLinkCommand}"
+                                            Content="📋 Copy URL"/>
+                                </Grid>
+                            </StackPanel>
+
+                            <!-- Feedback Toast -->
+                            <Border Background="#1C3F4F" BorderBrush="{StaticResource SteamAccentBrush}"
+                                    BorderThickness="1" CornerRadius="4" Padding="8,6"
+                                    IsVisible="{Binding CopiedFeedbackMessage, Converter={x:Static StringConverters.IsNotNullOrEmpty}}">
+                                <TextBlock Text="{Binding CopiedFeedbackMessage}" Foreground="{StaticResource SteamAccentBrush}"
+                                           FontSize="12" HorizontalAlignment="Center" FontWeight="SemiBold"/>
+                            </Border>
+
+                            <Separator Background="{StaticResource SteamBorderBrush}" Height="1"/>
+
+                            <!-- Store URL Raw Box -->
+                            <StackPanel Spacing="4">
+                                <TextBlock Text="Steam Store URL:" FontSize="11" Foreground="{StaticResource SteamTextSecondaryBrush}"/>
+                                <TextBox Text="{Binding SelectedListing.StoreLink}" IsReadOnly="True"
+                                         FontSize="11" Background="#0E141B" Foreground="{StaticResource SteamTextSecondaryBrush}"/>
+                            </StackPanel>
+                        </StackPanel>
+                    </ScrollViewer>
+                </Grid>
+            </Border>
+        </Grid>
+    </Grid>
+</UserControl>

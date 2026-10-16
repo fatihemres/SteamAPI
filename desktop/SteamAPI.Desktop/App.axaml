@@ -1,0 +1,80 @@
+<Application xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="SteamAPI.Desktop.App"
+             xmlns:local="using:SteamAPI.Desktop"
+             RequestedThemeVariant="Dark">
+
+    <Application.DataTemplates>
+        <local:ViewLocator/>
+    </Application.DataTemplates>
+  
+    <Application.Resources>
+        <!-- Steam-inspired dark palette -->
+        <Color x:Key="SteamBackground">#0E141B</Color>
+        <Color x:Key="SteamSurface">#171D25</Color>
+        <Color x:Key="SteamCardBackground">#1B2838</Color>
+        <Color x:Key="SteamCardHover">#2A475E</Color>
+        <Color x:Key="SteamBorderColor">#2A3F5A</Color>
+        <Color x:Key="SteamAccent">#66C0F4</Color>
+        <Color x:Key="SteamAccentDark">#1999E3</Color>
+        <Color x:Key="SteamTextPrimary">#E5EFF7</Color>
+        <Color x:Key="SteamTextSecondary">#8F98A0</Color>
+        <Color x:Key="SteamDiscountGreen">#A4D007</Color>
+        <Color x:Key="SteamDiscountBg">#4C6B22</Color>
+        <Color x:Key="SteamSuccess">#2ECC71</Color>
+        <Color x:Key="SteamWarning">#F39C12</Color>
+        <Color x:Key="SteamError">#E74C3C</Color>
+
+        <SolidColorBrush x:Key="SteamBackgroundBrush" Color="{StaticResource SteamBackground}"/>
+        <SolidColorBrush x:Key="SteamSurfaceBrush" Color="{StaticResource SteamSurface}"/>
+        <SolidColorBrush x:Key="SteamCardBrush" Color="{StaticResource SteamCardBackground}"/>
+        <SolidColorBrush x:Key="SteamCardHoverBrush" Color="{StaticResource SteamCardHover}"/>
+        <SolidColorBrush x:Key="SteamBorderBrush" Color="{StaticResource SteamBorderColor}"/>
+        <SolidColorBrush x:Key="SteamAccentBrush" Color="{StaticResource SteamAccent}"/>
+        <SolidColorBrush x:Key="SteamAccentDarkBrush" Color="{StaticResource SteamAccentDark}"/>
+        <SolidColorBrush x:Key="SteamTextPrimaryBrush" Color="{StaticResource SteamTextPrimary}"/>
+        <SolidColorBrush x:Key="SteamTextSecondaryBrush" Color="{StaticResource SteamTextSecondary}"/>
+        <SolidColorBrush x:Key="SteamDiscountGreenBrush" Color="{StaticResource SteamDiscountGreen}"/>
+        <SolidColorBrush x:Key="SteamDiscountBgBrush" Color="{StaticResource SteamDiscountBg}"/>
+        <SolidColorBrush x:Key="SteamSuccessBrush" Color="{StaticResource SteamSuccess}"/>
+        <SolidColorBrush x:Key="SteamWarningBrush" Color="{StaticResource SteamWarning}"/>
+        <SolidColorBrush x:Key="SteamErrorBrush" Color="{StaticResource SteamError}"/>
+    </Application.Resources>
+
+    <Application.Styles>
+        <FluentTheme />
+
+        <!-- Common Button Styles -->
+        <Style Selector="Button.accent">
+            <Setter Property="Background" Value="#1999E3"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="CornerRadius" Value="6"/>
+            <Setter Property="Padding" Value="14,8"/>
+        </Style>
+        <Style Selector="Button.accent:pointerover">
+            <Setter Property="Background" Value="#66C0F4"/>
+            <Setter Property="Foreground" Value="#0E141B"/>
+        </Style>
+
+        <Style Selector="Button.secondary">
+            <Setter Property="Background" Value="#2A475E"/>
+            <Setter Property="Foreground" Value="#C7D5E0"/>
+            <Setter Property="CornerRadius" Value="6"/>
+            <Setter Property="Padding" Value="12,8"/>
+        </Style>
+        <Style Selector="Button.secondary:pointerover">
+            <Setter Property="Background" Value="#385F7E"/>
+            <Setter Property="Foreground" Value="White"/>
+        </Style>
+
+        <!-- Card Container Style -->
+        <Style Selector="Border.card">
+            <Setter Property="Background" Value="{StaticResource SteamCardBrush}"/>
+            <Setter Property="BorderBrush" Value="{StaticResource SteamBorderBrush}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="CornerRadius" Value="8"/>
+            <Setter Property="Padding" Value="16"/>
+        </Style>
+    </Application.Styles>
+</Application>

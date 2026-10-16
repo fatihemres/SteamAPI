@@ -1,0 +1,190 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:SteamAPI.Desktop.ViewModels"
+             xmlns:models="using:SteamAPI.Desktop.Models"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="1000" d:DesignHeight="600"
+             x:Class="SteamAPI.Desktop.Views.ApiInspectorView"
+             x:DataType="vm:ApiInspectorViewModel">
+
+    <Grid ColumnDefinitions="360,*" Margin="24">
+        <!-- Left Column: Request History List -->
+        <Border Grid.Column="0" Classes="card" Margin="0,0,16,0" Padding="12">
+            <Grid RowDefinitions="Auto,*,Auto">
+                <!-- Header -->
+                <Grid Grid.Row="0" ColumnDefinitions="*,Auto" Margin="4,0,4,12">
+                    <StackPanel Grid.Column="0" Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">
+                        <TextBlock Text="HTTP Telemetry Log" FontWeight="Bold" FontSize="14"
+                                   Foreground="{StaticResource SteamTextPrimaryBrush}"/>
+                        <Border Background="#0E141B" CornerRadius="10" Padding="6,2" VerticalAlignment="Center">
+                            <TextBlock Text="{Binding Records.Count, StringFormat='({0})'}" FontSize="11"
+                                       Foreground="{StaticResource SteamAccentBrush}" FontWeight="SemiBold"/>
+                        </Border>
+                    </StackPanel>
+                    <Button Grid.Column="1" Classes="secondary"
+                            Command="{Binding ClearHistoryCommand}"
+                            Content="Clear" FontSize="12" Padding="8,4"/>
+                </Grid>
+
+                <!-- Empty State -->
+                <StackPanel Grid.Row="1" VerticalAlignment="Center" HorizontalAlignment="Center" Spacing="8"
+                            IsVisible="{Binding !Records.Count}">
+                    <TextBlock Text="📡" FontSize="36" HorizontalAlignment="Center" Opacity="0.4"/>
+                    <TextBlock Text="No Requests Captured" FontWeight="SemiBold" FontSize="14"
+                               Foreground="{StaticResource SteamTextPrimaryBrush}" HorizontalAlignment="Center"/>
+                    <TextBlock Text="Perform a search in the Game Explorer to view live HTTP request and response telemetry."
+                               Foreground="{StaticResource SteamTextSecondaryBrush}" FontSize="12"
+                               TextWrapping="Wrap" TextAlignment="Center" Margin="16,0"/>
+                </StackPanel>
+
+                <!-- History List -->
+                <ListBox Grid.Row="1" ItemsSource="{Binding Records}"
+                         SelectedItem="{Binding SelectedRecord}"
+                         Background="Transparent"
+                         IsVisible="{Binding Records.Count}">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate x:DataType="models:ApiInspectionRecord">
+                            <Border Background="#162231" BorderBrush="#2A3F5A" BorderThickness="1"
+                                    CornerRadius="6" Padding="10,8" Margin="0,0,0,6">
+                                <Grid RowDefinitions="Auto,Auto">
+                                    <!-- Row 0: Badges & Latency -->
+                                    <Grid Grid.Row="0" ColumnDefinitions="Auto,Auto,*,Auto" Margin="0,0,0,6">
+                                        <!-- Method Badge -->
+                                        <Border Grid.Column="0" Background="#1B4965" CornerRadius="3" Padding="5,2" Margin="0,0,6,0">
+                                            <TextBlock Text="{Binding HttpMethod}" FontSize="10" FontWeight="Bold" Foreground="#62B6CB"/>
+                                        </Border>
+
+                                        <!-- Status Badge -->
+                                        <Border Grid.Column="1" Background="#238636" CornerRadius="3" Padding="5,2" Margin="0,0,6,0">
+                                            <TextBlock Text="{Binding ResponseStatusCode}"
+                                                       FontSize="10" FontWeight="Bold" Foreground="White"/>
+                                        </Border>
+
+                                        <!-- Duration -->
+                                        <TextBlock Grid.Column="2" Text="{Binding DurationFormatted}"
+                                                   Foreground="{StaticResource SteamTextSecondaryBrush}"
+                                                   FontSize="11" VerticalAlignment="Center"/>
+
+                                        <!-- Timestamp -->
+                                        <TextBlock Grid.Column="3" Text="{Binding TimestampFormatted}"
+                                                   Foreground="{StaticResource SteamTextSecondaryBrush}"
+                                                   FontSize="11" VerticalAlignment="Center"/>
+                                    </Grid>
+
+                                    <!-- Row 1: Request Endpoint Summary -->
+                                    <TextBlock Grid.Row="1" Text="{Binding RequestUrl}"
+                                               FontSize="11" Foreground="{StaticResource SteamTextPrimaryBrush}"
+                                               TextTrimming="CharacterEllipsis"/>
+                                </Grid>
+                            </Border>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+
+                <!-- Footer Summary -->
+                <TextBlock Grid.Row="2" Text="Retains up to 50 recent requests" FontSize="11"
+                           Foreground="{StaticResource SteamTextSecondaryBrush}" HorizontalAlignment="Center" Margin="0,8,0,0"/>
+            </Grid>
+        </Border>
+
+        <!-- Right Column: Inspector Details -->
+        <Border Grid.Column="1" Classes="card" Padding="16">
+            <Grid>
+                <!-- Empty Inspector Prompt -->
+                <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" Spacing="8"
+                            IsVisible="{Binding SelectedRecord, Converter={x:Static ObjectConverters.IsNull}}">
+                    <TextBlock Text="🔍" FontSize="40" HorizontalAlignment="Center" Opacity="0.4"/>
+                    <TextBlock Text="Select a Telemetry Record" FontWeight="SemiBold" FontSize="15"
+                               Foreground="{StaticResource SteamTextPrimaryBrush}" HorizontalAlignment="Center"/>
+                    <TextBlock Text="Select any entry from the history log to inspect request headers, query payload, and response JSON."
+                               Foreground="{StaticResource SteamTextSecondaryBrush}" FontSize="12"
+                               TextWrapping="Wrap" TextAlignment="Center" Margin="30,0"/>
+                </StackPanel>
+
+                <!-- Inspector Content -->
+                <Grid RowDefinitions="Auto,Auto,*,*"
+                      IsVisible="{Binding SelectedRecord, Converter={x:Static ObjectConverters.IsNotNull}}"
+                      Margin="0,0,0,0">
+
+                    <!-- Header Summary -->
+                    <Border Grid.Row="0" Background="#162231" BorderBrush="#2A3F5A" BorderThickness="1"
+                            CornerRadius="6" Padding="12,10" Margin="0,0,0,12">
+                        <Grid ColumnDefinitions="*,Auto">
+                            <StackPanel Grid.Column="0" Spacing="4">
+                                <StackPanel Orientation="Horizontal" Spacing="8">
+                                    <Border Background="#1B4965" CornerRadius="3" Padding="5,2">
+                                        <TextBlock Text="{Binding SelectedRecord.HttpMethod}" FontSize="11" FontWeight="Bold" Foreground="#62B6CB"/>
+                                    </Border>
+                                    <TextBlock Text="{Binding SelectedRecord.ResponseStatusCode, StringFormat='HTTP {0}'}"
+                                               FontSize="12" FontWeight="Bold" Foreground="{StaticResource SteamTextPrimaryBrush}"/>
+                                    <TextBlock Text="{Binding SelectedRecord.ResponseStatusText}" FontSize="12"
+                                               Foreground="{StaticResource SteamTextSecondaryBrush}"/>
+                                    <TextBlock Text="•" Foreground="{StaticResource SteamTextSecondaryBrush}"/>
+                                    <TextBlock Text="{Binding SelectedRecord.DurationFormatted}"
+                                               FontSize="12" Foreground="{StaticResource SteamAccentBrush}"/>
+                                </StackPanel>
+                                <TextBlock Text="{Binding SelectedRecord.RequestUrl}" FontSize="12"
+                                           Foreground="{StaticResource SteamTextSecondaryBrush}" TextTrimming="CharacterEllipsis"/>
+                            </StackPanel>
+
+                            <Button Grid.Column="1" Classes="secondary"
+                                    Command="{Binding CopyEndpointUrlCommand}"
+                                    Content="📋 Copy URL" FontSize="11" Padding="8,4" VerticalAlignment="Center"/>
+                        </Grid>
+                    </Border>
+
+                    <!-- Feedback Banner -->
+                    <Border Grid.Row="1" Background="#1C3F4F" BorderBrush="{StaticResource SteamAccentBrush}"
+                            BorderThickness="1" CornerRadius="4" Padding="8,6" Margin="0,0,0,10"
+                            IsVisible="{Binding CopyFeedbackMessage, Converter={x:Static StringConverters.IsNotNullOrEmpty}}">
+                        <TextBlock Text="{Binding CopyFeedbackMessage}" Foreground="{StaticResource SteamAccentBrush}"
+                                   FontSize="12" HorizontalAlignment="Center" FontWeight="SemiBold"/>
+                    </Border>
+
+                    <!-- Request Payload Section -->
+                    <Grid Grid.Row="2" RowDefinitions="Auto,*" Margin="0,0,0,12">
+                        <Grid Grid.Row="0" ColumnDefinitions="*,Auto" Margin="0,0,0,6">
+                            <TextBlock Grid.Column="0" Text="REQUEST BODY (JSON)" FontSize="11" FontWeight="Bold"
+                                       Foreground="{StaticResource SteamAccentBrush}" VerticalAlignment="Center"/>
+                            <Button Grid.Column="1" Classes="secondary"
+                                    Command="{Binding CopyRequestJsonCommand}"
+                                    Content="📋 Copy Request JSON" FontSize="11" Padding="8,3"/>
+                        </Grid>
+                        <TextBox Grid.Row="1"
+                                 Text="{Binding SelectedRecord.RequestBodyJson}"
+                                 IsReadOnly="True"
+                                 AcceptsReturn="True"
+                                 FontFamily="Cascadia Code, Consolas, Courier New, monospace"
+                                 FontSize="12"
+                                 Background="#0E141B"
+                                 Foreground="#A5D6A7"
+                                 CornerRadius="6"
+                                 TextWrapping="NoWrap"/>
+                    </Grid>
+
+                    <!-- Response Payload Section -->
+                    <Grid Grid.Row="3" RowDefinitions="Auto,*">
+                        <Grid Grid.Row="0" ColumnDefinitions="*,Auto" Margin="0,0,0,6">
+                            <TextBlock Grid.Column="0" Text="RESPONSE BODY (JSON)" FontSize="11" FontWeight="Bold"
+                                       Foreground="{StaticResource SteamAccentBrush}" VerticalAlignment="Center"/>
+                            <Button Grid.Column="1" Classes="secondary"
+                                    Command="{Binding CopyResponseJsonCommand}"
+                                    Content="📋 Copy Response JSON" FontSize="11" Padding="8,3"/>
+                        </Grid>
+                        <TextBox Grid.Row="1"
+                                 Text="{Binding SelectedRecord.ResponseBodyJson}"
+                                 IsReadOnly="True"
+                                 AcceptsReturn="True"
+                                 FontFamily="Cascadia Code, Consolas, Courier New, monospace"
+                                 FontSize="12"
+                                 Background="#0E141B"
+                                 Foreground="#90CAF9"
+                                 CornerRadius="6"
+                                 TextWrapping="NoWrap"/>
+                    </Grid>
+                </Grid>
+            </Grid>
+        </Border>
+    </Grid>
+</UserControl>
