@@ -93,7 +93,6 @@
                             <StackPanel Spacing="4">
                                 <TextBlock Text="🇹🇷 Turkey (TR)" FontWeight="Bold" Foreground="{StaticResource SteamTextPrimaryBrush}"/>
                                 <TextBlock Text="Culture ID: 1" FontSize="11" Foreground="{StaticResource SteamAccentBrush}"/>
-                                <TextBlock Text="Currency: ₺ (TRY / USD-TR)" FontSize="11" Foreground="{StaticResource SteamTextSecondaryBrush}"/>
                                 <TextBlock Text="Primary targeted market" FontSize="11" Foreground="{StaticResource SteamTextSecondaryBrush}"/>
                             </StackPanel>
                         </Border>
@@ -104,7 +103,6 @@
                             <StackPanel Spacing="4">
                                 <TextBlock Text="🇺🇸 United States (US)" FontWeight="Bold" Foreground="{StaticResource SteamTextPrimaryBrush}"/>
                                 <TextBlock Text="Culture ID: 2" FontSize="11" Foreground="{StaticResource SteamAccentBrush}"/>
-                                <TextBlock Text="Currency: $ (USD)" FontSize="11" Foreground="{StaticResource SteamTextSecondaryBrush}"/>
                                 <TextBlock Text="Validation &amp; baseline market" FontSize="11" Foreground="{StaticResource SteamTextSecondaryBrush}"/>
                             </StackPanel>
                         </Border>
@@ -115,7 +113,6 @@
                             <StackPanel Spacing="4">
                                 <TextBlock Text="🇪🇸 Spain (ES)" FontWeight="Bold" Foreground="{StaticResource SteamTextPrimaryBrush}"/>
                                 <TextBlock Text="Culture ID: 3" FontSize="11" Foreground="{StaticResource SteamAccentBrush}"/>
-                                <TextBlock Text="Currency: € (EUR)" FontSize="11" Foreground="{StaticResource SteamTextSecondaryBrush}"/>
                                 <TextBlock Text="European validation market" FontSize="11" Foreground="{StaticResource SteamTextSecondaryBrush}"/>
                             </StackPanel>
                         </Border>

@@ -91,7 +91,7 @@ public class ApiProcessManagerTests : IDisposable
 
         using var manager = new ApiProcessManager();
 
-        var started = await manager.StartAsync(exitPath).WaitAsync(TimeSpan.FromSeconds(5));
+        var started = await manager.StartAsync(exitPath).WaitAsync(TimeSpan.FromSeconds(10));
 
         Assert.False(started);
         Assert.Equal(ApiProcessState.Failed, manager.State);

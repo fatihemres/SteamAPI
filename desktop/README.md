@@ -2,7 +2,7 @@
 
 **Version:** `v0.1.0 (Release Candidate)`  
 **Target Runtime:** `.NET 10.0` (C# 14)  
-**UI Framework:** [Avalonia UI](https://avaloniaui.net/) 12.0  
+**UI Framework:** [Avalonia UI](https://avaloniaui.net/) 11.2  
 **Pattern:** MVVM (via `CommunityToolkit.Mvvm`)  
 **Companion Backend:** [SteamAPI v0.2.0](https://github.com/fatihemres/SteamAPI)  
 **License:** Permissive MIT License  
@@ -36,10 +36,10 @@ Built from the ground up on modern **.NET 10** and **Avalonia UI**, SteamAPI Des
 
 ### Feature 1: Game Explorer
 * **Search Catalog:** Search titles by keyword with client-side input validation (length limits, non-empty checks).
-* **Multi-Culture Storefront Switching:** Instantly query regional stores:
-  * 🇹🇷 **Turkey (TR / Culture 1):** Turkish storefront with regional pricing representations.
-  * 🇺🇸 **United States (US / Culture 2):** Baseline USD storefront.
-  * 🇪🇸 **Spain (ES / Culture 3):** European EUR storefront.
+* **Multi-Culture Storefront Switching:** Instantly query supported regional stores:
+  * 🇹🇷 **Turkey (TR / Culture 1):** Turkish storefront (Primary targeted market).
+  * 🇺🇸 **United States (US / Culture 2):** United States storefront (Validation & baseline market).
+  * 🇪🇸 **Spain (ES / Culture 3):** Spain storefront (European validation market).
 * **Game Cards & Selection:** View search results with game title, App ID badge, sale type badges (`PAID`, `FREE TO PLAY`, `NOT AVAILABLE`), and verified price formatting.
 
 ### Feature 2: Game Details Inspector
@@ -148,11 +148,11 @@ dotnet run --project desktop/SteamAPI.Desktop/SteamAPI.Desktop.csproj
 
 `SteamAPI` v0.2.0 natively accepts three culture IDs corresponding to specific Steam regional storefronts:
 
-| Culture ID | Country Code | Language | Description & Pricing |
+| Culture ID | Country Code | Language | Market Description |
 | :---: | :---: | :---: | :--- |
-| **1** | `TR` | `turkish` | **Turkey:** Steam USD-TR regional market. |
-| **2** | `US` | `english` | **United States:** Baseline North American USD market. |
-| **3** | `ES` | `spanish` | **Spain:** European Union EUR (€) market. |
+| **1** | `TR` | `turkish` | **Turkey:** Primary targeted storefront market. |
+| **2** | `US` | `english` | **United States:** Validation & baseline storefront market. |
+| **3** | `ES` | `spanish` | **Spain:** European validation storefront market. |
 
 ---
 
@@ -161,8 +161,8 @@ dotnet run --project desktop/SteamAPI.Desktop/SteamAPI.Desktop.csproj
 SteamAPI maintains 100% test pass rates across all layers:
 
 * **Baseline SteamAPI Tests:** 157 / 157 passing (100% green).
-* **SteamAPI Desktop Tests:** 37 / 37 passing (100% green).
-* **Total Executed Tests:** **194 / 194 passing** across solution.
+* **SteamAPI Desktop Tests:** 65 / 65 passing (100% green).
+* **Total Executed Tests:** **222 / 222 passing** across solution.
 
 Test coverage for Desktop includes:
 * `SteamGameListingTests`: 6-field contract serialization and display price formatting.

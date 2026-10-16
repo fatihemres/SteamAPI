@@ -21,7 +21,7 @@ public class SteamCulture
             LanguageName = "english",
             CountryCode = "US",
             FlagEmoji = "🇺🇸",
-            Description = "US Store (cc=us, lang=english) - USD pricing"
+            Description = "US Store (cc=us, lang=english)"
         },
         new()
         {
@@ -30,7 +30,7 @@ public class SteamCulture
             LanguageName = "turkish",
             CountryCode = "TR",
             FlagEmoji = "🇹🇷",
-            Description = "Turkish Store (cc=tr, lang=turkish) - USD_MENA regional pricing"
+            Description = "Turkish Store (cc=tr, lang=turkish)"
         },
         new()
         {
@@ -39,7 +39,7 @@ public class SteamCulture
             LanguageName = "spanish",
             CountryCode = "ES",
             FlagEmoji = "🇪🇸",
-            Description = "Spanish Store (cc=es, lang=spanish) - EUR pricing"
+            Description = "Spanish Store (cc=es, lang=spanish)"
         }
     };
 }

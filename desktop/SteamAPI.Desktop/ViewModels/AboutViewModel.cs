@@ -10,7 +10,7 @@ public partial class AboutViewModel : ViewModelBase
 
     public string AppVersion => "v0.1.0 (Release Candidate)";
     public string ApiCompatibilityVersion => "SteamAPI v0.2.0 (.NET 10)";
-    public string FrameworkVersion => ".NET 10.0 (C# 14, Avalonia UI 12.0)";
+    public string FrameworkVersion => ".NET 10.0 (C# 14, Avalonia UI 11.2)";
     public string LicenseType => "MIT License";
 
     public string GitHubRepoUrl => "https://github.com/fatihemres/SteamAPI";
