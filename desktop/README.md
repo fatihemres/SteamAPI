@@ -109,19 +109,33 @@ graph TD
 
 ## 4. First-Run & Quickstart Guide
 
-### Option A: Running from Release Bundle (Zero Setup)
-1. Download `SteamAPI-Desktop-v0.1.0-win-x64.zip` from GitHub Releases.
-2. Verify the SHA-256 checksum:
+### Option A: Recommended Windows Installer (Primary Release Download)
+
+1. **Download:** Grab `SteamAPI-Desktop-Setup-v0.1.0-win-x64.exe` from GitHub Releases or the Actions artifact bundle.
+2. **Checksum Verification:** Verify the SHA-256 checksum against the matching `.sha256` sidecar file:
+   ```powershell
+   Get-FileHash -Algorithm SHA256 .\SteamAPI-Desktop-Setup-v0.1.0-win-x64.exe
+   ```
+3. **Installation:** Run the setup executable.
+   * **Per-User Non-Admin Setup:** Installs directly to `%LOCALAPPDATA%\Programs\SteamAPI Desktop` without requiring administrative UAC elevation.
+   * **Custom Path:** The destination directory can be customized during setup.
+   * **Start Menu & Shortcuts:** Creates a Start Menu entry (`SteamAPI Desktop`) and provides an optional desktop shortcut task.
+   * **SmartScreen Note:** As an open-source, royalty-free product without an expensive commercial EV code-signing certificate, Windows SmartScreen will display an "Unknown Publisher" prompt on initial run. Click **More info** -> **Run anyway**.
+4. **Upgrades:** Future versions can be installed directly over existing installations; the installer uses a persistent Application ID GUID to perform safe in-place upgrades.
+5. **Uninstallation:** Registered in standard Windows Settings (**Installed Apps** / **Add or Remove Programs**). The clean uninstaller removes all installed application binaries and shortcuts without touching unrelated files.
+6. **User Settings Preservation:** Custom settings located at `%APPDATA%\SteamAPI.Desktop\settings.json` are strictly preserved across upgrades, reinstalls, and uninstallation.
+
+### Option B: Portable ZIP Archive (Advanced / Developer Alternative)
+
+For environments where installation is restricted or for portable USB usage:
+1. Download `SteamAPI-Desktop-v0.1.0-win-x64.zip` and verify SHA-256 checksum:
    ```powershell
    Get-FileHash -Algorithm SHA256 .\SteamAPI-Desktop-v0.1.0-win-x64.zip
    ```
-3. Extract the ZIP archive.
-4. Launch `SteamAPI.Desktop.exe`.
-5. If no external API is running, either:
-   * Open **Settings** and click **Start Server** to launch the bundled loopback API.
-   * Enable **Offline Demo Mode** to explore instantly with synthetic data.
+2. Extract the archive into any local folder.
+3. Launch `SteamAPI.Desktop.exe` directly.
 
-### Option B: Building from Source
+### Option C: Building from Source
 Prerequisites: [.NET 10.0 SDK](https://dotnet.microsoft.com/download/dotnet/10.0)
 
 ```powershell
@@ -135,7 +149,7 @@ dotnet restore SteamAPI.sln
 # Build complete solution (backend + tests + desktop)
 dotnet build SteamAPI.sln
 
-# Run all 194 automated tests
+# Run all 222 automated tests
 dotnet test SteamAPI.sln
 
 # Run the desktop application
