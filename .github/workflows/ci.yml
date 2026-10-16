@@ -46,3 +46,25 @@ jobs:
 
       - name: Run tests (Release)
         run: dotnet test SteamAPI.sln --configuration Release --no-build --no-restore
+
+      - name: Validate Desktop Packaging (Windows)
+        if: matrix.os == 'windows-latest'
+        shell: pwsh
+        run: |
+          ./desktop/package-release.ps1
+          if (-not (Test-Path "artifacts/releases/SteamAPI-Desktop-v0.1.0-win-x64.zip")) {
+            throw "Expected release archive artifacts/releases/SteamAPI-Desktop-v0.1.0-win-x64.zip was not found."
+          }
+          if (-not (Test-Path "artifacts/releases/SteamAPI-Desktop-v0.1.0-win-x64.zip.sha256")) {
+            throw "Expected checksum file artifacts/releases/SteamAPI-Desktop-v0.1.0-win-x64.zip.sha256 was not found."
+          }
+
+      - name: Upload Windows Desktop Artifacts
+        if: matrix.os == 'windows-latest'
+        uses: actions/upload-artifact@v4
+        with:
+          name: steamapi-desktop-v0.1.0-win-x64
+          path: |
+            artifacts/releases/SteamAPI-Desktop-v0.1.0-win-x64.zip
+            artifacts/releases/SteamAPI-Desktop-v0.1.0-win-x64.zip.sha256
+          if-no-files-found: error
