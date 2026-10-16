@@ -111,6 +111,7 @@ jobs:
         shell: bash
         env:
           GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
         run: |
           if git ls-remote --tags https://github.com/${{ github.repository }}.git refs/tags/steamapi-desktop-v0.1.0 | grep -q .; then
             echo 'Release tag already exists; refusing to overwrite it.' >&2
