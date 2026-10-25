@@ -216,7 +216,7 @@ For test inventory details, see [Release Candidate Notes](docs/releases/v0.2.0-r
 - **Unrecognized Markup Behavior:** Completely unrecognized HTML containing no expected `match` elements (e.g. an unexpected full-page redesign or bot-challenge returned with HTTP 200) currently produces an empty result array `[]`.
 - **Currency Code Omission:** The public Listing contract provides a numeric `price` but does not carry an ISO 4217 currency code.
 - **Deployment Protections:** This milestone does not implement application-level rate limiting or production monitoring. The application is intended for deployment behind a managed reverse proxy or API gateway (such as YARP, Nginx, or Cloudflare) configured with appropriate rate limiting, TLS termination, and health probes.
-- **Repository Licensing:** The repository currently does not contain a declared open-source LICENSE file; public visibility does not imply open-source licensing.
+- **Repository Licensing:** Original material owned by the repository author is proprietary, all rights reserved; see [LICENSE](LICENSE). Public visibility does not grant general reuse permission. Steam/Valve content and third-party rights remain separate.
 
 ---
 
