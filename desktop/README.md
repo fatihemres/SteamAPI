@@ -1,11 +1,11 @@
 # SteamAPI Desktop
 
-**Version:** `v0.1.0 (Release Candidate)`  
+**Version:** `v0.1.0` — published October 16, 2026  
 **Target Runtime:** `.NET 10.0` (C# 14)  
-**UI Framework:** [Avalonia UI](https://avaloniaui.net/) 11.2  
+**UI Framework:** [Avalonia UI](https://avaloniaui.net/) `12.0.4`  
 **Pattern:** MVVM (via `CommunityToolkit.Mvvm`)  
 **Companion Backend:** [SteamAPI v0.2.0](https://github.com/fatihemres/SteamAPI)  
-**License:** Permissive MIT License  
+**License:** [Repository LICENSE](../LICENSE) — current repository notice: proprietary / all rights reserved  
 **Financial Model:** **$0.00 / Zero Mandatory Recurring Costs**
 
 ---
@@ -17,10 +17,10 @@
 Built from the ground up on modern **.NET 10** and **Avalonia UI**, SteamAPI Desktop delivers a native, responsive dark-mode gaming aesthetic while maintaining strict compliance with the verified `SteamAPI v0.2.0` contract (`POST /steam`).
 
 ### Key Principles
-* **Zero Mandatory Recurring Costs:** Built entirely on open-source, royalty-free technologies without paid third-party components, commercial UI libraries, subscriptions, or cloud hosting dependencies.
+* **Zero Mandatory Recurring Costs:** Local use requires no mandatory cloud subscription or paid hosting. The application uses third-party packages under their respective licenses; this does not make SteamAPI's original code open source.
 * **Non-Invasive Architecture:** Preserves the existing ASP.NET Core `SteamAPI` project and its 157 baseline unit/integration tests without touching protected code.
 * **Developer & User Friendly:** Functions both as an interactive visual consumer for everyday users and a rich API inspector for developers.
-* **Zero-Configuration First Run:** Includes a supervised loopback child process manager to auto-launch the local API, alongside an instant Offline Demo Mode.
+* **Configurable Local API:** Includes a supervised loopback child process manager and Offline Demo Mode. On a fresh installation, `AutoStartApi` is **false** and `DemoMode` is **false**; use Settings to start the companion API or enable automatic startup, or switch to Demo Mode to explore without a running backend.
 
 ---
 
@@ -60,7 +60,7 @@ Built from the ground up on modern **.NET 10** and **Avalonia UI**, SteamAPI Des
 * **Payload Inspection:** Formatted JSON viewers for both request payloads and response bodies with syntax coloring and one-click clipboard copying.
 
 ### Feature 4: Bundled Loopback Server (Child Process Manager)
-* Automatically discovers and manages a local `SteamAPI` backend process.
+* Can discover and manage a local `SteamAPI` backend process when started from Settings or when the user explicitly enables **Auto-start API**; it is not launched automatically with default settings.
 * Binds strictly to `http://127.0.0.1:5271` to prevent unwanted network exposure.
 * Performs socket-level port conflict detection.
 * Graceful lifecycle management: guarantees termination of the child process tree upon desktop application exit.
@@ -120,7 +120,7 @@ graph TD
    * **Per-User Non-Admin Setup:** Installs directly to `%LOCALAPPDATA%\Programs\SteamAPI Desktop` without requiring administrative UAC elevation.
    * **Custom Path:** The destination directory can be customized during setup.
    * **Start Menu & Shortcuts:** Creates a Start Menu entry (`SteamAPI Desktop`) and provides an optional desktop shortcut task.
-   * **SmartScreen Note:** As an open-source, royalty-free product without an expensive commercial EV code-signing certificate, Windows SmartScreen will display an "Unknown Publisher" prompt on initial run. Click **More info** -> **Run anyway**.
+   * **SmartScreen Note:** The published Windows installer is not claimed to be Authenticode-signed. Windows may show an "Unknown Publisher" or SmartScreen warning. Verify the official GitHub Release and its checksum, and review the publisher trust warning before deciding whether to run it.
 4. **Upgrades:** Future versions can be installed directly over existing installations; the installer uses a persistent Application ID GUID to perform safe in-place upgrades.
 5. **Uninstallation:** Registered in standard Windows Settings (**Installed Apps** / **Add or Remove Programs**). The clean uninstaller removes all installed application binaries and shortcuts without touching unrelated files.
 6. **User Settings Preservation:** Custom settings located at `%APPDATA%\SteamAPI.Desktop\settings.json` are strictly preserved across upgrades, reinstalls, and uninstallation.
@@ -202,6 +202,8 @@ To create an official release package and checksum:
 ```
 
 This generates:
+* `artifacts/releases/SteamAPI-Desktop-Setup-v0.1.0-win-x64.exe`
+* `artifacts/releases/SteamAPI-Desktop-Setup-v0.1.0-win-x64.exe.sha256`
 * `artifacts/releases/SteamAPI-Desktop-v0.1.0-win-x64.zip`
 * `artifacts/releases/SteamAPI-Desktop-v0.1.0-win-x64.zip.sha256`
 
@@ -227,30 +229,20 @@ To verify that a downloaded binary or package originates from the official repos
    ```powershell
    Get-FileHash -Algorithm SHA256 .\SteamAPI-Desktop-v0.1.0-win-x64.zip
    ```
-3. **Git Commit & Tag Verification:** Official builds correspond to signed or annotated Git release tags within `fatihemres/SteamAPI`.
-4. **Integrity vs. Attribution:** While cryptographic checksums and digital signatures ensure binary payload integrity and detect unauthorized tampering, software authorship and copyright ownership are established by the public Git commit lineage and license documentation.
+3. **Git Commit & Tag Verification:** Check the release tag and its target commit in the official GitHub repository. **Do not assume the tag or binary is digitally signed** unless a verifiable signature is provided.
+4. **Integrity vs. Attribution:** A matching SHA-256 checksum detects file changes relative to the published checksum, but a checksum distributed alongside the file is **not a publisher signature**. Use the official repository's release provenance and Git history to assess origin; do not infer code-signing from the presence of a checksum.
 
 ---
 
 ## 10. Licensing & Trademarks
 
 ### Software License
-SteamAPI Desktop is proposed for release under the **MIT License**:
+The current repository-level [LICENSE](../LICENSE) describes the original, owner-controlled SteamAPI and SteamAPI Desktop materials as **proprietary / all rights reserved**, subject to third-party rights and previously valid grants. This is **not** a general MIT-licensed or open-source repository.
 
-```text
-Copyright (c) 2026 Fatih Emre Sarman
+Earlier versions of this Desktop README described an **MIT licensing proposal** and included a partial permission notice inconsistent with the current repository-level notice. This documentation correction does not determine the legal effect of any earlier publication or revoke rights that were already validly granted. Review the historical terms and obtain appropriate legal advice if reuse permissions depend on those versions.
 
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-```
+.NET, Avalonia, NuGet dependencies, fonts, images and other third-party material retain their own licenses and rights; consult their original notices.
 
 ### Trademark Disclaimer
-> **Notice:** SteamAPI and SteamAPI Desktop are independent open-source developer tools and are **not** affiliated with, authorized, maintained, sponsored, or endorsed by **Valve Corporation** or any of its affiliates.  
+> **Notice:** SteamAPI and SteamAPI Desktop are independent developer projects and are **not** affiliated with, authorized, maintained, sponsored, or endorsed by **Valve Corporation** or any of its affiliates.  
 > *Steam* and the *Steam logo* are trademarks or registered trademarks of Valve Corporation in the United States and other countries.
